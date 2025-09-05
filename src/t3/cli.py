@@ -20,6 +20,7 @@ import click
 import tempfile
 import subprocess
 import urllib.parse
+import shutil
 from click_default_group import DefaultGroup
 
 
@@ -31,9 +32,24 @@ def cli():
 @cli.command()
 @click.argument("destination", nargs=1)
 def backup(destination):
+    os.system("osascript -e 'quit app \"Things3\"'")
+
     d = things.database.Database()
     db_path = d.filepath
-    print(f"copying {db_path} to {destination}")
+    shutil.copyfile(db_path, destination)
+    print(f"copied {db_path} to {destination}")
+
+
+@cli.command()
+@click.argument("backup", nargs=1)
+def restore(backup):
+    d = things.database.Database()
+    db_path = d.filepath
+
+    os.system("osascript -e 'quit app \"Things3\"'")
+
+    shutil.copyfile(backup, db_path)
+    print(f"copied {backup} to {db_path}")
 
 
 @cli.command()
