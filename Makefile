@@ -16,4 +16,5 @@ dist/requirements.txt:
 .PHONY: clean
 clean:
 	rm -rf dist src/t3.egg-info
-	find src -name __pycache__ -type d -exec rm -r "{}" \;
+	find src -type f -name *.pyc -delete
+	find src -type d -name __pycache__ -delete
