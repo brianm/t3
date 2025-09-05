@@ -5,6 +5,8 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
+    "click>=8.2.1",
+    "click-default-group>=1.2.4",
     "things-py>=0.0.15",
 ]
 
@@ -14,7 +16,7 @@ dev = [
 ]
 
 [project.scripts]
-t3 = "t3.main:main"
+t3 = "t3.cli:cli"
 
 [build-system]
 requires = ["hatchling"]

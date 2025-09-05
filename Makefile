@@ -5,7 +5,7 @@ dist/t3: dist/requirements.txt
 	uvx pex \
 	        -r dist/requirements.txt \
 			--sources=src/ \
-			-m t3.main \
+			-m t3.cli \
             --scie eager \
             --scie-pbs-stripped \
             -o dist/t3.pex
