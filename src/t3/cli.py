@@ -55,7 +55,7 @@ def add():
     if title:
         u = url(command="add", title=title, notes=notes)
         print(u)
-        os.system(f"open '{u}'")
+        os.system(f"open -g '{u}'")
 
 def url(uuid=None, command="show", **query_parameters) -> str:
     """
