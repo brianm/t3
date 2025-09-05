@@ -15,4 +15,5 @@ dist/requirements.txt:
 
 .PHONY: clean
 clean:
-	rm -rf dist
+	rm -rf dist src/t3.egg-info
+	find src -name __pycache__ -type d -exec rm -r "{}" \;
