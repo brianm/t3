@@ -15,56 +15,71 @@
 
 import os
 import things
+import things.database
 import click
 import tempfile
 import subprocess
 import urllib.parse
 from click_default_group import DefaultGroup
 
-@click.group(cls=DefaultGroup, default='today', default_if_no_args=True)
+
+@click.group(cls=DefaultGroup, default="today", default_if_no_args=True)
 def cli():
     pass
+
+
+@cli.command()
+@click.argument("destination", nargs=1)
+def backup(destination):
+    d = things.database.Database()
+    db_path = d.filepath
+    print(f"copying {db_path} to {destination}")
+
 
 @cli.command()
 def all():
     for area in things.areas():
-        print(area['title'])
-        for todo in things.todos(area = area['uuid']):
+        print(area["title"])
+        for todo in things.todos(area=area["uuid"]):
             print(f"\t{todo['title']}")
+
 
 @cli.command()
 def today():
     for todo in things.today():
-        print(todo['title'])
+        print(todo["title"])
 
-# TODO instead of special casing title, put all the various options, commented out
-#      with reasonmable defaults. Don't comment out `title` and put it last so the
-#      seek to end still works
+
+# TODO instead of special casing title, put all the various options, commented
+#      out with reasonmable defaults. Don't comment out `title` and put it last
+#      so the seek to end still works
 @cli.command()
 def add():
-    title: str = ''
-    notes: str = ''
-    with tempfile.NamedTemporaryFile(suffix='.txt') as tmp:
-        tmp.write(b'title: ')
+    title: str = ""
+    notes: str = ""
+    with tempfile.NamedTemporaryFile(suffix=".txt") as tmp:
+        tmp.write(b"title: ")
         tmp.flush()
         tmp.seek(0)
-        editor = os.environ.get('EDITOR', 'vim')
-        if editor == 'emacs':
-            subprocess.run([editor, tmp.name, '--eval', '(goto-char (point-max))'], check=True)
+        editor = os.environ.get("EDITOR", "vim")
+        if editor == "emacs":
+            subprocess.run(
+                [editor, tmp.name, "--eval", "(goto-char (point-max))"], check=True
+            )
         else:
             subprocess.run([editor, tmp.name], check=True)
         headers = True
         for line in tmp:
             line = line.decode()
-            if line[0] == '#':
+            if line[0] == "#":
                 continue
             if headers:
                 if line.isspace():
                     headers = False
                     continue
                 else:
-                    (name, value) = line.split(':', 1)
-                    if name == 'title':
+                    (name, value) = line.split(":", 1)
+                    if name == "title":
                         title = value.strip()
             else:
                 notes = f"{notes}\n{line}"
@@ -73,7 +88,9 @@ def add():
         u = url(command="add", title=title, notes=notes)
         os.system(f"open -g '{u}'")
 
-# TODO From things.py as yet unreleased version. Delete this and use things.py once released
+
+# TODO From things.py as yet unreleased version. Delete this and use things.py
+#      once released
 def url(uuid=None, command="show", **query_parameters) -> str:
     """
     Return a things:///<command>?<query> url.
@@ -122,9 +139,11 @@ def url(uuid=None, command="show", **query_parameters) -> str:
 
     return f"things:///{command}?{query_string}"
 
+
 # TODO From things.py as yet unreleased version. Delete this and use things.py once released
 def token():
     return "hello"
+
 
 if __name__ == "__main__":
     cli()
