@@ -22,11 +22,14 @@ def today():
     for todo in things.today():
         print(todo['title'])
 
+# TODO instead of special casing title, put all the various options, commented out
+#      with reasonmable defaults. Don't comment out `title` and put it last so the
+#      seek to end still works
 @cli.command()
 def add():
     title: str = ''
     notes: str = ''
-    with tempfile.NamedTemporaryFile() as tmp:
+    with tempfile.NamedTemporaryFile(suffix='.txt') as tmp:
         tmp.write(b'title: ')
         tmp.flush()
         tmp.seek(0)
@@ -45,7 +48,6 @@ def add():
                     headers = False
                     continue
                 else:
-                    print(line)
                     (name, value) = line.split(':', 1)
                     if name == 'title':
                         title = value.strip()
@@ -54,9 +56,9 @@ def add():
                 pass
     if title:
         u = url(command="add", title=title, notes=notes)
-        print(u)
         os.system(f"open -g '{u}'")
 
+# TODO From things.py as yet unreleased version. Delete this and use things.py once released
 def url(uuid=None, command="show", **query_parameters) -> str:
     """
     Return a things:///<command>?<query> url.
@@ -105,6 +107,7 @@ def url(uuid=None, command="show", **query_parameters) -> str:
 
     return f"things:///{command}?{query_string}"
 
+# TODO From things.py as yet unreleased version. Delete this and use things.py once released
 def token():
     return "hello"
 
